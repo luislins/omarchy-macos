@@ -10,7 +10,7 @@
 #   - Ghostty com paleta Tokyo Night (night), titlebar minimalista, padding
 #   - JetBrainsMono Nerd Font (a fonte padrao do Omarchy: terminal e sistema)
 #   - starship prompt em Tokyo Night
-#   - btop, bat, fzf, lazygit, neovim -> Tokyo Night (so os que ja existem)
+#   - btop, bat, fzf, lazygit, neovim, zellij -> Tokyo Night (so os que ja existem)
 #   - Cursor: extensao enkia.tokyo-night + fonte, igual ao Omarchy faz
 #   - Dark mode + accent/highlight color azul Tokyo Night
 #   - Wallpaper oficial do tema tokyo-night do Omarchy
@@ -434,7 +434,32 @@ else
   skip "neovim sem config"
 fi
 
-# ------------------------------------------------------------------ 9. Cursor
+# ----------------------------------------------------------------- 9. zellij
+
+# O zellij ja traz o Tokyo Night embutido (4 variantes: tokyo-night,
+# -dark, -storm, -light), entao basta apontar o tema no config.
+# Como os outros TUIs, so mexe se o zellij estiver instalado.
+if has zellij; then
+  info "configurando zellij"
+  ZJ_CONF="$XDG/zellij/config.kdl"
+
+  if [ -f "$ZJ_CONF" ]; then
+    backup "$ZJ_CONF"
+    if grep -qE '^[[:space:]]*theme[[:space:]]' "$ZJ_CONF"; then
+      /usr/bin/sed -i '' 's|^[[:space:]]*theme[[:space:]].*|theme "tokyo-night"|' "$ZJ_CONF"
+    else
+      printf '\ntheme "tokyo-night"\n' >> "$ZJ_CONF"
+    fi
+  else
+    mkdir -p "$(dirname "$ZJ_CONF")"
+    printf 'theme "tokyo-night"\n' > "$ZJ_CONF"
+  fi
+  ok "zellij -> tokyo-night"
+else
+  skip "zellij nao instalado"
+fi
+
+# ------------------------------------------------------------------ 10. Cursor
 
 # O Omarchy tematiza Cursor/VSCode da forma mais simples possivel: instala a
 # extensao enkia.tokyo-night e seleciona o tema "Tokyo Night". E literalmente
@@ -542,7 +567,7 @@ if [ "$DO_VSCODE" -eq 1 ]; then
   theme_vscode_like "VS Code" "$HOME/Library/Application Support/Code" "$VSCODE_CLI"
 fi
 
-# ---------------------------------------------------------- 10. macOS aparencia
+# ---------------------------------------------------------- 11. macOS aparencia
 
 info "aplicando aparencia do sistema"
 
@@ -554,7 +579,7 @@ defaults write -g AppleAccentColor -int 4
 defaults write -g AppleHighlightColor -string "0.478431 0.635294 0.968627 Blue"
 ok "accent/highlight color"
 
-# ----------------------------------------------------------- 11. wallpaper
+# ----------------------------------------------------------- 12. wallpaper
 
 if [ -z "$WALLPAPER" ]; then
   skip "--no-wallpaper: papel de parede inalterado"
@@ -594,7 +619,7 @@ else
   fi
 fi
 
-# ---------------------------------------------------------- 12. Dock (opcional)
+# ---------------------------------------------------------- 13. Dock (opcional)
 
 if [ "$DO_DOCK" -eq 1 ]; then
   info "escondendo o Dock"
