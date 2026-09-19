@@ -74,6 +74,7 @@ entende** — não é preciso rodar os dois na mão:
 | `aerokeys` | Mostra os atalhos lendo o **seu** `~/.aerospace.toml` — o equivalente do `Super+K` do Omarchy |
 | `aerokeys workspace` | Filtra a lista |
 | `aeroassign` | Define em qual workspace cada app abre, descobrindo os bundle IDs sozinho |
+| `./scripts/doctor.sh` | Confere o estado da instalação e aponta sobras de versões anteriores. **Só lê** |
 
 ## Atalhos do AeroSpace
 
@@ -95,6 +96,17 @@ Onde o Omarchy diz `Super`, aqui é **`Alt`** (Option, `⌥`).
 | `Alt + Shift + ;` | Modo service (`esc` recarrega, `r` reseta o layout) |
 
 Decore o `Alt + T` primeiro. Quando um app brigar com o tiling, é ele que resolve.
+
+## Conferindo a instalação
+
+```bash
+./scripts/doctor.sh
+```
+
+Lista o estado atual (fonte do Ghostty, titlebar, tema do zellij, linhas do
+`.zshrc`), aponta sobras de versões anteriores dos scripts e mostra quanto os
+backups estão ocupando. **Ele nunca apaga nem altera nada** — no fim, imprime os
+comandos de limpeza para você revisar e rodar se concordar.
 
 ## Decisões e pegadinhas
 
