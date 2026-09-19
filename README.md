@@ -108,6 +108,18 @@ São **funções**, não scripts, porque precisam fazer `cd` no seu shell. O
 `install.sh` as instala em `~/.config/omarchy/worktree.zsh` e adiciona a linha de
 carregamento no `~/.zshrc`.
 
+### Conflito com o oh-my-zsh
+
+O plugin `git` do oh-my-zsh define `ga='git add'` e `gd='git diff'`, e **no zsh
+alias tem precedência sobre função** — sem tratamento, `ga minha-branch` viraria
+`git add minha-branch`. O arquivo faz `unalias ga gd` antes de definir as funções,
+então a linha que o carrega precisa vir **depois** do `source $ZSH/oh-my-zsh.sh`
+(o `install.sh` acrescenta no fim do `.zshrc`, o que garante isso).
+
+O custo: você perde `gd` como atalho de `git diff`. Se preferir manter, comente
+as duas linhas de `unalias` no arquivo — as mesmas funções continuam disponíveis
+como **`gwa`** e **`gwd`**.
+
 ## Decisões e pegadinhas
 
 Estas são as razões por trás de escolhas que não são óbvias no código.

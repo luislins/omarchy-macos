@@ -10,6 +10,18 @@
 # Precisam ser FUNCOES, nao scripts, porque fazem 'cd' no seu shell.
 # Instale com:
 #   . ~/.config/omarchy/worktree.zsh     # no ~/.zshrc
+# (a linha tem que vir DEPOIS do 'source $ZSH/oh-my-zsh.sh')
+#
+# CONFLITO COM O OH-MY-ZSH
+# ------------------------
+# O plugin 'git' do oh-my-zsh define 'ga=git add' e 'gd=git diff', e no zsh
+# ALIAS TEM PRECEDENCIA SOBRE FUNCAO. Sem remover os aliases, 'ga branch'
+# viraria 'git add branch'. Por isso o unalias abaixo.
+#
+# Se voce prefere manter 'gd' como 'git diff', comente as duas linhas de
+# unalias: as funcoes continuam acessiveis como 'gwa' e 'gwd'.
+unalias ga 2>/dev/null
+unalias gd 2>/dev/null
 
 # Raiz do repositorio principal, mesmo se voce ja estiver dentro de um worktree.
 _wt_main_root() {
@@ -132,3 +144,8 @@ gd() {
 
   echo "-> $raiz"
 }
+
+# Nomes alternativos, para quem mantiver os aliases do oh-my-zsh.
+# (gw* = git worktree)
+gwa() { ga "$@"; }
+gwd() { gd "$@"; }
