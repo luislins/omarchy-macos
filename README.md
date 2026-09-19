@@ -56,9 +56,6 @@ não duplica linhas no `.zshrc`.
 | `aerokeys` | Mostra os atalhos lendo o **seu** `~/.aerospace.toml` — o equivalente do `Super+K` do Omarchy |
 | `aerokeys workspace` | Filtra a lista |
 | `aeroassign` | Define em qual workspace cada app abre, descobrindo os bundle IDs sozinho |
-| `ga <branch>` | Cria um git worktree para a branch numa pasta irmã e entra nele |
-| `ga` | Lista os worktrees do repositório |
-| `gd` | Remove o worktree atual e a branch, perguntando antes |
 
 ## Atalhos do AeroSpace
 
@@ -80,45 +77,6 @@ Onde o Omarchy diz `Super`, aqui é **`Alt`** (Option, `⌥`).
 | `Alt + Shift + ;` | Modo service (`esc` recarrega, `r` reseta o layout) |
 
 Decore o `Alt + T` primeiro. Quando um app brigar com o tiling, é ele que resolve.
-
-## Git worktrees: `ga` e `gd`
-
-Portadas do [capítulo 20 do manual do Omarchy](https://github.com/omacom/omarchy/blob/quattro/manual/20-shell-functions.md).
-
-Worktree é ter **várias branches abertas ao mesmo tempo, em pastas diferentes**,
-compartilhando o mesmo `.git`. Sem `stash`, sem trocar de branch, sem rebuild —
-você revisa um PR numa pasta enquanto seu trabalho segue intacto na outra.
-
-```bash
-ga DOLLA-1234     # cria ../<repo>-DOLLA-1234 e entra nele
-ga                # lista os worktrees existentes
-gd                # remove o worktree atual e a branch (pergunta antes)
-```
-
-O `ga` cobre três casos sozinho: branch que já existe local, branch que só existe
-no remoto (cria local rastreando) e branch nova (parte da branch padrão do remoto).
-Barras no nome viram hífen na pasta: `feature/x` → `<repo>-feature-x`.
-
-O `gd` tem duas travas. Se a árvore estiver suja, ele mostra o que seria perdido
-antes de perguntar. Se a branch tiver commits que não estão na base, ele pergunta
-uma segunda vez antes de apagar — e recusando, mantém a branch e remove só o
-worktree.
-
-São **funções**, não scripts, porque precisam fazer `cd` no seu shell. O
-`install.sh` as instala em `~/.config/omarchy/worktree.zsh` e adiciona a linha de
-carregamento no `~/.zshrc`.
-
-### Conflito com o oh-my-zsh
-
-O plugin `git` do oh-my-zsh define `ga='git add'` e `gd='git diff'`, e **no zsh
-alias tem precedência sobre função** — sem tratamento, `ga minha-branch` viraria
-`git add minha-branch`. O arquivo faz `unalias ga gd` antes de definir as funções,
-então a linha que o carrega precisa vir **depois** do `source $ZSH/oh-my-zsh.sh`
-(o `install.sh` acrescenta no fim do `.zshrc`, o que garante isso).
-
-O custo: você perde `gd` como atalho de `git diff`. Se preferir manter, comente
-as duas linhas de `unalias` no arquivo — as mesmas funções continuam disponíveis
-como **`gwa`** e **`gwd`**.
 
 ## Decisões e pegadinhas
 
@@ -169,7 +127,6 @@ fontes do sistema com SIP desativado, o que quebra a cada atualização.
 | `~/.aerospace.toml` | Atalhos, gaps, regras de janelas |
 | `~/.config/borders/bordersrc` | Cor e espessura da borda |
 | `~/.config/zellij/config.kdl` | `theme "tokyo-night"` (o zellij já traz o tema embutido) |
-| `~/.config/omarchy/worktree.zsh` | As funções `ga` e `gd` |
 | `~/.zshrc` | 2 linhas: carregar o snippet e iniciar o starship |
 | `~/Pictures/Wallpapers/` | Wallpaper do tema |
 

@@ -30,20 +30,6 @@ if [ "$SO_TEMA" -eq 0 ]; then
 fi
 
 echo
-echo "==> funcoes de shell (ga/gd)"
-mkdir -p "$HOME/.config/omarchy"
-cp shell/worktree.zsh "$HOME/.config/omarchy/worktree.zsh"
-
-RC="$HOME/.zshrc"
-LINHA='[ -f "$HOME/.config/omarchy/worktree.zsh" ] && . "$HOME/.config/omarchy/worktree.zsh"   # omarchy'
-if [ -f "$RC" ] && grep -qF -- "$LINHA" "$RC"; then
-  echo "    ja carregado no ~/.zshrc"
-else
-  printf '\n%s\n' "$LINHA" >> "$RC"
-  echo "    linha de carregamento adicionada ao ~/.zshrc"
-fi
-
-echo
 echo "==> utilitarios em ~/.local/bin"
 mkdir -p "$HOME/.local/bin"
 cp bin/aerokeys bin/aeroassign "$HOME/.local/bin/"
