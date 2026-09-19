@@ -26,6 +26,9 @@ mas **só nos que já estiverem instalados**. Os passos são condicionais.
 git clone <url-deste-repo> ~/code/omarchy-macos
 cd ~/code/omarchy-macos
 
+./install.sh               # tema + tiling + utilitarios, na ordem
+
+# ou passo a passo, se preferir
 ./scripts/tema.sh          # cores, fonte, prompt, Cursor, wallpaper
 ./scripts/aerospace.sh     # tiling + bordas  (opcional)
 
@@ -47,10 +50,22 @@ não duplica linhas no `.zshrc`.
 ./scripts/tema.sh --dock              # esconde o Dock
 
 ./scripts/aerospace.sh --no-borders   # tiling sem o JankyBorders
-
-# vale para os dois: não guarda cópia do que for sobrescrito
-./scripts/tema.sh --no-backup
 ```
+
+O `install.sh` aceita as mesmas flags e **encaminha cada uma para o script que a
+entende** — não é preciso rodar os dois na mão:
+
+```bash
+./install.sh --no-backup              # vale para os dois scripts
+./install.sh --so-tema --no-backup    # só as cores, sem backup
+./install.sh --no-borders --vscode    # cada flag vai para o seu destino
+```
+
+| Flag | Vai para |
+|---|---|
+| `--no-install`, `--no-backup` | os dois scripts |
+| `--no-borders` | só o `aerospace.sh` |
+| `--no-ghostty`, `--vscode`, `--dock`, `--wallpaper X` | só o `tema.sh` |
 
 ### Utilitários
 
