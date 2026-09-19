@@ -47,6 +47,9 @@ não duplica linhas no `.zshrc`.
 ./scripts/tema.sh --dock              # esconde o Dock
 
 ./scripts/aerospace.sh --no-borders   # tiling sem o JankyBorders
+
+# vale para os dois: não guarda cópia do que for sobrescrito
+./scripts/tema.sh --no-backup
 ```
 
 ### Utilitários
@@ -131,6 +134,10 @@ fontes do sistema com SIP desativado, o que quebra a cada atualização.
 | `~/Pictures/Wallpapers/` | Wallpaper do tema |
 
 ## Desfazer
+
+Por padrão, tudo que os scripts sobrescrevem é copiado antes para
+`~/.omarchy-macos-backup/<timestamp>/`. Use `--no-backup` para desligar, e
+`rm -rf ~/.omarchy-macos-backup` para apagar os acumulados.
 
 ```bash
 # backups completos, por data

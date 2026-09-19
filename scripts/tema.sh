@@ -24,6 +24,7 @@
 #   ./omarchy-tokyonight-macos.sh --no-wallpaper        # nao mexe no papel de parede
 #   ./omarchy-tokyonight-macos.sh --wallpaper ARQUIVO   # escolhe outro wallpaper
 #   ./omarchy-tokyonight-macos.sh --vscode              # tematiza o VS Code tambem
+#   ./omarchy-tokyonight-macos.sh --no-backup           # nao guarda copia do que sobrescrever
 #
 # Wallpapers do tema tokyo-night (omacom/omarchy, branch quattro):
 #   0-winding-road.webp   estrada sinuosa no por do sol roxo
@@ -33,6 +34,7 @@
 #   6-oma.webp            omarchy.webp
 #
 # Tudo que for sobrescrito vai para ~/.omarchy-macos-backup/<timestamp>/
+# (use --no-backup para desligar isso; sem rede de seguranca, entao)
 
 set -euo pipefail
 
@@ -47,6 +49,7 @@ DO_INSTALL=1
 DO_DOCK=0
 DO_GHOSTTY=1
 DO_VSCODE=0
+DO_BACKUP=1
 WALLPAPER="1-quattro.webp"
 
 while [ $# -gt 0 ]; do
@@ -54,6 +57,7 @@ while [ $# -gt 0 ]; do
     --no-install)    DO_INSTALL=0 ;;
     --no-ghostty)    DO_GHOSTTY=0 ;;
     --vscode)        DO_VSCODE=1 ;;
+    --no-backup)      DO_BACKUP=0 ;;
     --dock)          DO_DOCK=1 ;;
     --no-wallpaper)  WALLPAPER="" ;;
     --wallpaper)     WALLPAPER="${2:-}"; shift ;;
@@ -80,6 +84,7 @@ has() { command -v "$1" >/dev/null 2>&1; }
 # Move um arquivo/diretorio existente para o backup antes de sobrescrever.
 backup() {
   local target="$1"
+  [ "$DO_BACKUP" -eq 1 ] || return 0
   [ -e "$target" ] || return 0
   local rel="${target#"$HOME"/}"
   local dest="$BACKUP_DIR/$rel"
@@ -108,8 +113,14 @@ ensure_line() {
 
 [ "$(uname -s)" = "Darwin" ] || die "este script e so para macOS."
 
-mkdir -p "$BACKUP_DIR"
-info "backup desta execucao: $BACKUP_DIR"
+if [ "$DO_BACKUP" -eq 1 ]; then
+  mkdir -p "$BACKUP_DIR"
+  info "backup desta execucao: $BACKUP_DIR"
+  TXT_BACKUP="backups completos em: $BACKUP_DIR"
+else
+  warn "--no-backup: o que for sobrescrito NAO sera salvo em lugar nenhum"
+  TXT_BACKUP="rodou com --no-backup: nada foi salvo"
+fi
 
 if ! has brew; then
   if [ "$DO_INSTALL" -eq 1 ]; then
@@ -648,7 +659,7 @@ Proximos passos:
   4. accent/highlight so aparecem 100% depois de sair e entrar na conta
 
 Desfazer:
-  - backups completos em: $BACKUP_DIR
+  - $TXT_BACKUP
   - remova a linha "# tokyonight" de $RC
   - defaults delete -g AppleAccentColor; defaults delete -g AppleHighlightColor
 

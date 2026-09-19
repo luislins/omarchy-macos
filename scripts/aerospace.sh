@@ -16,6 +16,7 @@
 #   ./omarchy-aerospace-macos.sh                # instala e configura tudo
 #   ./omarchy-aerospace-macos.sh --no-borders   # so o AeroSpace, sem bordas
 #   ./omarchy-aerospace-macos.sh --no-install   # so escreve as configs
+#   ./omarchy-aerospace-macos.sh --no-backup    # nao guarda copia do que sobrescrever
 #
 # Backups do que existia antes vao para ~/.omarchy-macos-backup/<timestamp>/
 #
@@ -33,10 +34,12 @@ XDG="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 DO_INSTALL=1
 DO_BORDERS=1
+DO_BACKUP=1
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --no-install) DO_INSTALL=0 ;;
+    --no-backup)   DO_BACKUP=0 ;;
     --no-borders) DO_BORDERS=0 ;;
     -h|--help)    sed -n '2,27p' "$0"; exit 0 ;;
     *) echo "argumento desconhecido: $1" >&2; exit 2 ;;
@@ -59,6 +62,7 @@ has() { command -v "$1" >/dev/null 2>&1; }
 
 backup() {
   local target="$1"
+  [ "$DO_BACKUP" -eq 1 ] || return 0
   [ -e "$target" ] || return 0
   local rel="${target#"$HOME"/}"
   local dest="$BACKUP_DIR/$rel"
@@ -89,8 +93,14 @@ if ! has brew && [ "$DO_INSTALL" -eq 1 ]; then
   die "Homebrew nao encontrado. Instale em https://brew.sh ou rode com --no-install."
 fi
 
-mkdir -p "$BACKUP_DIR"
-info "backup desta execucao: $BACKUP_DIR"
+if [ "$DO_BACKUP" -eq 1 ]; then
+  mkdir -p "$BACKUP_DIR"
+  info "backup desta execucao: $BACKUP_DIR"
+  TXT_BACKUP="backups completos em: $BACKUP_DIR"
+else
+  warn "--no-backup: o que for sobrescrito NAO sera salvo em lugar nenhum"
+  TXT_BACKUP="rodou com --no-backup: nada foi salvo"
+fi
 
 # ------------------------------------------------------------- 1. instalacao
 
@@ -334,5 +344,5 @@ Desfazer tudo:
   brew services stop borders && brew uninstall borders
   brew uninstall --cask aerospace
   rm ~/.aerospace.toml $XDG/borders/bordersrc
-  (backups em $BACKUP_DIR)
+  ($TXT_BACKUP)
 EOF
