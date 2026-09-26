@@ -154,7 +154,7 @@ else
   nota "nenhum backup dos scripts"
 fi
 
-for padrao in "$HOME"/.zshrc.bak-* "$HOME"/.aerospace.toml.bak-*; do
+for padrao in "$HOME"/.zshrc.bak-*; do
   [ -e "$padrao" ] || continue
   alerta "$(basename "$padrao")" ""
 done
@@ -162,20 +162,6 @@ if ls "$HOME"/.zshrc.bak-* >/dev/null 2>&1; then
   printf '       %sguarde o .zshrc.bak por uns dias: e o unico que nao da para%s\n' "$D" "$R"
   printf '       %sreconstruir a partir do repositorio (mudanca do nvm)%s\n' "$D" "$R"
 fi
-
-titulo "o que esta rodando"
-
-for p in AeroSpace borders; do
-  if pgrep -f "$p" >/dev/null 2>&1; then
-    ok "$p ativo"
-  else
-    nota "$p nao esta rodando"
-  fi
-done
-
-for u in aerokeys aeroassign; do
-  if [ -x "$HOME/.local/bin/$u" ]; then ok "$u instalado"; else nota "$u ausente"; fi
-done
 
 # ----------------------------------------------------------------- veredito
 

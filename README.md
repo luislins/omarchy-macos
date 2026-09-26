@@ -3,7 +3,7 @@
 Deixa o macOS com a cara do [Omarchy](https://omarchy.org) — o setup Arch + Hyprland
 do DHH — usando o tema **Tokyo Night**.
 
-Só estética e janelas. Não mexe em nada do sistema que não seja reversível, e tudo
+Só estética. Não mexe em nada do sistema que não seja reversível, e tudo
 que é sobrescrito vai para `~/.omarchy-macos-backup/<timestamp>/`.
 
 ## O que isso instala
@@ -13,8 +13,6 @@ que é sobrescrito vai para `~/.omarchy-macos-backup/<timestamp>/`.
 | **Ghostty** | Terminal nativo e rápido, onde a paleta Tokyo Night aparece |
 | **JetBrainsMono Nerd Font** | A fonte padrão do Omarchy. "Nerd Font" traz os ícones do prompt e dos TUIs |
 | **starship** | O prompt: diretório, branch, status do git, duração de comandos lentos |
-| **AeroSpace** | Tiling window manager estilo i3. **Não exige desativar o SIP** |
-| **JankyBorders** | Borda colorida na janela focada (o AeroSpace não desenha bordas) |
 | extensão `enkia.tokyo-night` | O tema dentro do Cursor / VS Code |
 
 Além disso, aplica o tema Tokyo Night no `bat`, `btop`, `lazygit`, `zellij` e no Neovim —
@@ -26,17 +24,13 @@ mas **só nos que já estiverem instalados**. Os passos são condicionais.
 git clone <url-deste-repo> ~/code/omarchy-macos
 cd ~/code/omarchy-macos
 
-./install.sh               # tema + tiling + utilitarios, na ordem
+./install.sh               # tema completo
 
-# ou passo a passo, se preferir
+# ou diretamente
 ./scripts/tema.sh          # cores, fonte, prompt, Cursor, wallpaper
-./scripts/aerospace.sh     # tiling + bordas  (opcional)
-
-# utilitários de linha de comando
-mkdir -p ~/.local/bin && cp bin/* ~/.local/bin/ && chmod +x ~/.local/bin/*
 ```
 
-Os dois scripts são **idempotentes**: rodar de novo pula o que já está feito e
+Os scripts são **idempotentes**: rodar de novo pula o que já está feito e
 não duplica linhas no `.zshrc`.
 
 ### Opções úteis
@@ -48,54 +42,18 @@ não duplica linhas no `.zshrc`.
 ./scripts/tema.sh --vscode            # tematiza o VS Code também
 ./scripts/tema.sh --wallpaper 2-swirl-buck.webp
 ./scripts/tema.sh --dock              # esconde o Dock
-
-./scripts/aerospace.sh --no-borders   # tiling sem o JankyBorders
 ```
 
-O `install.sh` aceita as mesmas flags e **encaminha cada uma para o script que a
-entende** — não é preciso rodar os dois na mão:
+O `install.sh` aceita as mesmas flags do `tema.sh`:
 
 ```bash
-./install.sh --no-backup              # vale para os dois scripts
-./install.sh --so-tema --no-backup    # só as cores, sem backup
-./install.sh --no-borders --vscode    # cada flag vai para o seu destino
+./install.sh --no-backup              # sem guardar copia do que for sobrescrito
+./install.sh --vscode                 # tematiza o VS Code tambem
 ```
-
-| Flag | Vai para |
-|---|---|
-| `--no-install`, `--no-backup` | os dois scripts |
-| `--no-borders` | só o `aerospace.sh` |
-| `--no-ghostty`, `--vscode`, `--dock`, `--wallpaper X` | só o `tema.sh` |
-
-### Utilitários
 
 | Comando | O que faz |
 |---|---|
-| `aerokeys` | Mostra os atalhos lendo o **seu** `~/.aerospace.toml` — o equivalente do `Super+K` do Omarchy |
-| `aerokeys workspace` | Filtra a lista |
-| `aeroassign` | Define em qual workspace cada app abre, descobrindo os bundle IDs sozinho |
 | `./scripts/doctor.sh` | Confere o estado da instalação e aponta sobras de versões anteriores. **Só lê** |
-
-## Atalhos do AeroSpace
-
-Onde o Omarchy diz `Super`, aqui é **`Alt`** (Option, `⌥`).
-
-| Atalho | Ação |
-|---|---|
-| `Alt + ←↓↑→` ou `hjkl` | Mover o foco |
-| `Alt + Shift + ←↓↑→` | Mover a janela |
-| `Alt + 1..9` | Ir para o workspace |
-| `Alt + Shift + 1..9` | Levar a janela junto |
-| `Alt + Enter` | Terminal novo |
-| `Alt + T` | **Soltar a janela do mosaico** — a válvula de escape |
-| `Alt + F` | Tela cheia |
-| `Alt + W` | Fechar |
-| `Alt + Tab` | Workspace anterior |
-| `Alt + /` | Inverter a orientação da divisão |
-| `Alt + ,` | Modo acordeão |
-| `Alt + Shift + ;` | Modo service (`esc` recarrega, `r` reseta o layout) |
-
-Decore o `Alt + T` primeiro. Quando um app brigar com o tiling, é ele que resolve.
 
 ## Conferindo a instalação
 
@@ -111,12 +69,6 @@ comandos de limpeza para você revisar e rodar se concordar.
 ## Decisões e pegadinhas
 
 Estas são as razões por trás de escolhas que não são óbvias no código.
-
-**Por que `Alt` e não `Cmd`.** O Omarchy usa Super para tudo, e no Linux essa tecla
-é praticamente livre. No macOS não há equivalente: `Cmd+1..9` troca abas, `Cmd+W`
-fecha aba, `Cmd+F` busca. O AeroSpace captura o atalho antes do app, então mapear
-em Cmd quebraria essas funções em todos os programas. Option é a única tecla
-razoavelmente livre.
 
 **Por que `macos-titlebar-style = tabs` e não `hidden`.** O `hidden` remove a
 titlebar por completo — visualmente mais próximo do Omarchy, mas no macOS ele
@@ -135,9 +87,6 @@ oficialmente, em *Install > Terminal*, junto de Alacritty e Kitty.
 default"*. Cascadia Mono aparece no manual apenas como uma das fontes opcionais
 instaláveis.
 
-**AeroSpace não desenha bordas.** É o JankyBorders que faz isso, e ele exige
-macOS 14+. O script pula essa parte automaticamente em versões anteriores.
-
 **O `settings.json` do Cursor é alterado por merge.** Se o arquivo tiver
 comentários (JSONC é válido ali), o parser JSON falha — nesse caso o script
 **não toca no arquivo** e deixa o trecho em `~/.config/tokyonight/vscode-settings.json`
@@ -154,8 +103,6 @@ fontes do sistema com SIP desativado, o que quebra a cada atualização.
 | `~/.config/ghostty/config` | Paleta, fonte, padding, titlebar, opacidade |
 | `~/.config/starship.toml` | Formato e cores do prompt |
 | `~/.config/tokyonight/shell.sh` | Cores do `fzf` e tema do `bat` |
-| `~/.aerospace.toml` | Atalhos, gaps, regras de janelas |
-| `~/.config/borders/bordersrc` | Cor e espessura da borda |
 | `~/.config/zellij/config.kdl` | `theme "tokyo-night"` (o zellij já traz o tema embutido) |
 | `~/.zshrc` | 2 linhas: carregar o snippet e iniciar o starship |
 | `~/Pictures/Wallpapers/` | Wallpaper do tema |
@@ -169,11 +116,6 @@ Por padrão, tudo que os scripts sobrescrevem é copiado antes para
 ```bash
 # backups completos, por data
 ls ~/.omarchy-macos-backup/
-
-# tiling
-brew services stop borders && brew uninstall borders
-brew uninstall --cask aerospace
-rm ~/.aerospace.toml ~/.config/borders/bordersrc
 
 # cores do sistema
 defaults delete -g AppleAccentColor
@@ -206,7 +148,5 @@ dá para portar qualquer um mantendo a estrutura destes scripts.
 ## Referências
 
 - [Manual do Omarchy](https://omarchy.org/manual/) ([fonte no GitHub](https://github.com/omacom/omarchy/tree/quattro/manual))
-- [AeroSpace](https://github.com/nikitabobko/AeroSpace) · [comandos](https://nikitabobko.github.io/AeroSpace/commands)
-- [JankyBorders](https://github.com/FelixKratz/JankyBorders)
 - [Ghostty](https://ghostty.org) · [starship](https://starship.rs)
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) — origem das paletas
