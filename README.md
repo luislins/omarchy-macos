@@ -109,20 +109,17 @@ fontes do sistema com SIP desativado, o que quebra a cada atualização.
 
 ## Desfazer
 
-Por padrão, tudo que os scripts sobrescrevem é copiado antes para
-`~/.omarchy-macos-backup/<timestamp>/`. Use `--no-backup` para desligar, e
-`rm -rf ~/.omarchy-macos-backup` para apagar os acumulados.
-
 ```bash
-# backups completos, por data
-ls ~/.omarchy-macos-backup/
-
-# cores do sistema
-defaults delete -g AppleAccentColor
-defaults delete -g AppleHighlightColor
-
-# remova também a linha marcada com "# tokyonight" do seu ~/.zshrc
+./uninstall.sh          # interativo: pergunta antes de cada etapa
+./uninstall.sh --sim    # aceita tudo sem perguntar
 ```
+
+O script remove configs, linhas do `.zshrc`, cores do sistema, wallpapers e
+backups acumulados. Também remove o AeroSpace e JankyBorders caso tenham sido
+instalados por versões anteriores do projeto.
+
+Por padrão, tudo que os scripts de instalação sobrescrevem é copiado antes para
+`~/.omarchy-macos-backup/<timestamp>/`. Use `--no-backup` para desligar.
 
 ## Extra: `scripts/acelera-zshrc.sh`
 
